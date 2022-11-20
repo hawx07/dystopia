@@ -60,7 +60,7 @@ function setup() {
     inside=0
     lamb=0
     pdfac=pixelDensity()
-
+    fr=0
 
 
 
@@ -112,7 +112,7 @@ function setup() {
     // print("üyprob", üyProb)
     üystart = 13 //7
     üyend = 35 // 35 //42 //30 rand olabilir
-    ortho = det(0.75)
+    ortho = 1//det(0.75)
     bw = det(0.4)
     suf = det(0.5)
     zoom = bias(5, 11, 6, 11, 1.5) //rand(5, 11) //4
@@ -125,12 +125,12 @@ function setup() {
     dbj = 0
     dbpep = 0
     //boş
-    roadD = 0
-    dbw = 1
-    dbp = 1
-    dbj = 1
-    dbpep = 1
-    üyProb = 0
+    // roadD = 0
+    // dbw = 1
+    // dbp = 1
+    // dbj = 1
+    // dbpep = 1
+    // üyProb = 0
     //
 
     hueRrange = rand(20, 60)
@@ -477,13 +477,13 @@ function setup() {
     }
     print(window.$fxhashFeatures)
 
-    r.push()
-    for (div2 = 0; div2 <= mapsize; div2 += 1) { //yol çizgileri2
-        div2coord = dr2c(div2) // - 200
-        üstyolH = üyY[div2]
-        road(0, div2coord, dr2[div2 + 1], 1)
-    }
-    r.pop()
+    // r.push()
+    // for (div2 = 0; div2 <= mapsize; div2 += 1) { //yol çizgileri2
+    //     div2coord = dr2c(div2) // - 200
+    //     üstyolH = üyY[div2]
+    //     road(0, div2coord, dr2[div2 + 1], 1)
+    // }
+    // r.pop()
 
     // r.push()
     // for (div1 = 0; div1 <= mapsize; div1 += 1) { //yol çizgileri2
@@ -497,20 +497,37 @@ function setup() {
     print("fin", millis() / 1000)
     div1 = 0
     finish = 0
+    frc=0
+    div2=0
 
 }
 
 function draw() {
-
+    if(fr==0){
+        if(frc<= mapsize){
+            // print("wo")
+            div2coord = dr2c(frc) // - 200
+            üstyolH = üyY[frc]
+            r.push()
+            road(0, div2coord, dr2[frc + 1], 1)
+            axC = 0
+            r.pop()
+            frc++
+        }
+        else{
+        fr=1
+        }
+    }
     // noLoop()
     if (div1 <= mapsize) {
         div1coord = dr1c(div1) // - 200
-
+        
         r.push()
         üstyolH = üyX[div1]
         road(div1coord, 0, dr1[div1 + 1], 0)
         r.pop()
-// noLoop()
+        
+
         for (div2 = 0; div2 <= mapsize; div2 += 1) {
             div2coord = dr2c(div2) // - 200
 
@@ -767,7 +784,7 @@ function draw() {
         }
         div1++
     } else {
-        if (finish == 0) {
+        if (finish == 0&&fr==1) {
             finish = 1
         }
 
@@ -1991,26 +2008,6 @@ function road(x, y, genişlik2, ax, yükseklik) {
     // print(adlen)
     r.strokeWeight(0.5 * sw)
     r.stroke(0)
-    // hm = rand(-25, 0)
-    // if (!bw) { //col
-    //     r.push()
-    //     r.colorMode(HSL, 360, 100, 255)
-    //     bcol = r.color(rand(hueStart, hueStart + 150), rand(3, 15), rand(127, 140) + 20) //rand(50, 55)
-    //     bcol2 = r.color(hue(bcol), saturation(bcol), lightness(bcol) + 30) //rand(25, 50)
-    //     bcol3 = r.color(hue(bcol2), saturation(bcol2), lightness(bcol2) + 12) //5
-    //     roadc = r.color(hueStart, saturation(bcol) / 2, 200) //220//178
-    //     r.pop()
-    // } else { //bw
-    //     r.push()
-    //     r.colorMode(HSL, 360, 100, 255)
-    //     bcol = r.color(rand(hueStart, hueStart + 30), 0, 190 + hm)
-    //     bcol2 = r.color(hue(bcol), saturation(bcol), lightness(bcol) + shaderand) //
-    //     bcol3 = r.color(hue(bcol2), saturation(bcol2), lightness(bcol2) + 10) //
-    //     roadc = r.color(hueStart, saturation(bcol), 220) //220
-    //     r.pop()
-    // }
-
-    // return
 
     getCol()
 
@@ -2029,21 +2026,8 @@ function road(x, y, genişlik2, ax, yükseklik) {
         len = adlen //dr2sum
         r.translate(0, iter)
     }
-    // r.translate(0,200)
-    // r.translate(0,0,100)
+
     r.fill(roadc)
-    // len = 2000 //2000
-
-    // r.stroke("green")
-    // r.noFill()
-    // r.strokeWeight(6)
-    // r.rect(0,0,genişlik,len)
-
-    // car(0,genişlik/4,100)
-    // car(genişlik/4,genişlik/4*2,100)
-    // car(genişlik/4*2,genişlik/4*3,100)
-    // car(genişlik/4*3,genişlik,100)
-
     r.strokeWeight(0.5 * sw)
 
     if (genişlik == anayol) {
