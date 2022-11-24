@@ -14,15 +14,24 @@ function setup() {
 
 
 
-
+    pixelDensity(2)
 
 
     noiseSeed(map(fxrand(), 0, 1, 0, 100000))
-    // r = createGraphics(canvas, canvas)
-    // print(windowHeight/800)
+
+
+    queryString = window.location.search
+    urlParams = new URLSearchParams(queryString)
+    res = urlParams.get("res")
+    if(null == res) { 
+    // print("null")
     pixelDensity(2)
-    // if(isPreview){pixelDensity(1)}
-    // pixelDensity(windowHeight/800)
+    }
+    if(res==0.5||res==1||res==2||res==4){
+        pixelDensity(float(res))
+    }else{
+        pixelDensity(2)
+    }
 
     
 
@@ -61,6 +70,7 @@ function setup() {
     lamb=0
     pdfac=pixelDensity()
     fr=0
+    totclick=0
 
 
 
@@ -108,17 +118,20 @@ function setup() {
     bcol2 = bcol + rand(20, 60) //*sL
     shaderand = rand(40, 60)
     üyMinH = 10 //5
-    üyProb = bias(0.1, 0.5, 10, 0.2, 1.4) //rand(0.1, 0.3) //0.2
+    üyProb = bias(0.1, 0.5, 10, 0.24, 1.4) //rand(0.1, 0.3) //0.2
     // print("üyprob", üyProb)
     üystart = 13 //7
     üyend = 35 // 35 //42 //30 rand olabilir
-    ortho = 1//det(0.75)
-    bw = det(0.4)
+    ortho = det(0.75)
+    bw = det(0.37)
     suf = det(0.5)
     zoom = bias(5, 11, 6, 11, 1.5) //rand(5, 11) //4
     rotX = -bias(50, 70, 10, 67, 1.4) //rand(-50, -70)
     rotZ = bias(15, 75, 10, 45, 1.2) //rand(15, 75)
-    zoom = 11 //3.5
+    // zoom = 11 //3.5
+    
+
+
     roadD = 1
     dbw = 0
     dbp = 0
@@ -128,7 +141,7 @@ function setup() {
     // roadD = 0
     // dbw = 1
     // dbp = 1
-    // dbj = 1
+    dbj = 1
     // dbpep = 1
     // üyProb = 0
     //
@@ -147,7 +160,7 @@ function setup() {
     // cmin=rand(25+cfark,125-cfark)
     // cmax=rand(125+cfark,255-cfark)
 
-    coldif = bias(20, 170, 10, 90, 1.4) //rand(50,200)
+    coldif = bias(20, 170, 10, 90, 1.5) //rand(50,200)
 //30-225   75-55
     cmin = rand(25 + cfark, 255 - cfark - coldif)
     // cmin = bias(25 + cfark, 255 - cfark - coldif,10,190,1.3)
@@ -180,6 +193,12 @@ function setup() {
         asp="16:9"
         }
         print("Canvas:", pixelDensity() * canvas + "x" + pixelDensity() * canvas2)
+
+
+        // if(zoom<9||rotX>-63||!ortho||üyProb<0.28||asp!="3:4"){//suf||bw||
+        //     location.reload()
+        // }
+
     // setAttributes('antialias', true);
     // smooth()
     r = createGraphics(canvas2, canvas, WEBGL)
@@ -193,13 +212,7 @@ function setup() {
     }
     drawingContext.imageSmoothingEnabled = true
     drawingContext.imageSmoothingQuality = 'high'
-    if(asp=="3:4"){
-        document.getElementById("defaultCanvas0").style.width = Adcanvas[0] + "px"
-        document.getElementById("defaultCanvas0").style.height = Adcanvas[1] + "px"
-    }else{
-        document.getElementById("defaultCanvas0").style.width = Adcanvas[1] + "px"
-        document.getElementById("defaultCanvas0").style.height = Adcanvas[0] + "px"
-    }
+    schance()
     // createCanvas(600, canvas)
     // setAttributes("antialias", true);
     // background(240)
@@ -337,7 +350,10 @@ function setup() {
     roofTex2 = createGraphics(256, 256)
     roofTex3 = createGraphics(256, 256)
     roofTex4 = createGraphics(256, 256)
-
+    if(!ortho){
+        // translate(0,-300)
+        magRec = 700
+    }
 
     mag = createGraphics(magRec, magRec)
     r.background(255)
@@ -494,7 +510,7 @@ function setup() {
     // r.pop()
 
 
-    print("fin", millis() / 1000)
+    // print("fin", millis() / 1000)
     div1 = 0
     finish = 0
     frc=0
@@ -792,7 +808,7 @@ function draw() {
 
 
     if (finish == 1) {
-        print("fin2", millis() / 1000)
+        print("fin", millis() / 1000)
         finish = 2
         fxpreview()
 
@@ -826,59 +842,49 @@ function draw() {
     // }
 
     // print(mouseX,mouseY)
-    if (finish) {
+    can.mouseOut(function sss(){inside=0})
+        can.mouseOver(function sss2(){inside=1})
+
+    if (finish&&(totclick%3)!=0) {
         // rectMode(CENTER)
         if(!ortho){
-            canvas = 900 //int((Adcanvas[0]))
+            canvas = 1200 //int((Adcanvas[0]))
             canvas2 = 1600 //600
         }
         mag.background(0)
         disableTrash = 10
+        if(totclick%3==1){
+            magzoom = 400
+        }else if(totclick%3==2){
+            magzoom = 200
+        }
+        
         // inside=0
         // print(mouseX,mouseY)
-        newx=abs(windowWidth-canvas2)/2
-        newy=abs(windowHeight-canvas)/2
-        can.mouseOut(function sss(){inside=0})
-        can.mouseOver(function sss2(){inside=1})
+        // newx=abs(windowWidth-canvas2)/2
+        // newy=abs(windowHeight-canvas)/2
+        
         // print(inside)
         // print(newx)
         // print("winMouseX",winMouseX)
         // print("mouseX",mouseX)
         if (inside) {
-            if(asp=="3:4"){
-
-               }else{
-
-               }
-        // if (mouseX-newx > disableTrash && mouseX-newx < (canvas2 - disableTrash) && mouseY-newy > disableTrash && mouseY-newy < (canvas - disableTrash)) {
-            // if(mouseX>20||mouseX<canvas-20||mouseY>20||mouseY<canvas-20){
-            // image(resizedBlur,0,0)
-            // mag.image(tt,-mouseX-magRec/4,-mouseY-magRec/2)
-            // magcal=300/canvas
-            // mag.image(ttemp,-mouseX*magcal+magRec/2,-mouseY*magcal+magRec/2)
-            //700
+            
+            if(ortho){
             mag.copy(r, mouseX - (magzoom / 2) - canvas2 / 2, mouseY - (magzoom / 2) - canvas / 2, magzoom, magzoom, 0, 0, magRec, magRec)
             push()
             drawingContext.shadowBlur = 70
             drawingContext.shadowColor = color(0, 0, 0, 250)
-            // drawingContext.filter = 'opacity(0.8)' 
-            // mx=map(mouseX,0,660,0,800)
-            mx = mouseX //+40
-            my = mouseY
-
-            // if(mouseX<magRec/2){mx=magRec/2}
-            // if(mouseY<magRec/2){my=magRec/2}
-            // if(mouseY>canvas-magRec/2){my=canvas-magRec/2}
-            // if(mouseX>canvas-magRec/2){mx=canvas-magRec/2}
-            // translate(-400,-400)
-            image(mag, mx - magRec / 2, my - magRec / 2)
+            image(mag, mouseX - magRec / 2, mouseY - magRec / 2)
             pop()
-            // rectMode(CENTER)
-            // rect(mouseX,mouseY,magRec,magRec)
-            // drawingContext.shadowBlur = 5
-            // drawingContext.shadowColor = color(0)
-            // print("ss")
-            // noLoop()
+            }else{
+                mag.copy(r, mouseX - (magzoom / 2) - canvas2 / 2, mouseY+300 - (magzoom / 2) - canvas / 2, magzoom, magzoom, 0, 0, magRec, magRec)
+                push()
+                drawingContext.shadowBlur = 70
+                drawingContext.shadowColor = color(0, 0, 0, 250)
+                image(mag, mouseX - magRec / 2, mouseY+300 - magRec / 2)
+                pop()  
+            }
             // textSize(60)
             // text(int(mouseX)+","+int(mouseY), mouseX, mouseY)
         }
@@ -886,16 +892,27 @@ function draw() {
     }
 
 
-    if (mouseIsPressed === true) {
-        if (mouseButton === CENTER) {
-            location.reload();
-        }
-    }
+    // if (mouseIsPressed === true) {
+    //     if (mouseButton === CENTER) {
+    //         location.reload();
+    //     }
+    // }
+
+    
 
 }
 
 function rand(x, y) {
     return map(fxrand(), 0, 1, x, y)
+}
+
+function mouseReleased() {
+    if (mouseButton === LEFT) {
+        can.mouseOut(function sss(){inside=0})
+        can.mouseOver(function sss2(){inside=1})
+        totclick++
+        
+    }
 }
 
 function keyPressed() {
@@ -1879,13 +1896,13 @@ function build(blX, blY, blW, blH) {
 
 }
 
-function mouseWheel(event) {
-    // print(event.delta);
-    //move the square according to the vertical scroll amount
-    magzoom += event.delta / 5
-    //uncomment to block page scrolling
-    //return false;
-}
+// function mouseWheel(event) {
+//     // print(event.delta);
+//     //move the square according to the vertical scroll amount
+//     magzoom += event.delta / 5
+//     //uncomment to block page scrolling
+//     //return false;
+// }
 
 
 
@@ -2011,7 +2028,7 @@ function road(x, y, genişlik2, ax, yükseklik) {
 
     getCol()
 
-    print("road")
+    // print("road")
     r.push()
     r.translate(x, y, 0)
 
@@ -2859,13 +2876,35 @@ function shuffleArray(array) {
 }
 
 function windowResized() {
+    schance()
+  }
+
+  function schance(){
     screen = [windowWidth, windowHeight]
     Adcanvas = sort(screen, 0)
+    // document.getElementById("defaultCanvas0").style.width = "auto"
+        // document.getElementById("defaultCanvas0").style.height = "auto"
     if(asp=="3:4"){
-        document.getElementById("defaultCanvas0").style.width = Adcanvas[0] + "px"
-        document.getElementById("defaultCanvas0").style.height = Adcanvas[1] + "px"
+        if(((windowWidth)/(windowHeight/4*3))<1){
+            document.getElementById("defaultCanvas0").style.height = "auto"
+            document.getElementById("defaultCanvas0").style.width = "100%"
+            // print("1")
+        }else{
+            document.getElementById("defaultCanvas0").style.width = "auto"
+            document.getElementById("defaultCanvas0").style.height = "100%"
+            // print("2")
+        }
     }else{
-        document.getElementById("defaultCanvas0").style.width = Adcanvas[1] + "px"
-        document.getElementById("defaultCanvas0").style.height = Adcanvas[0] + "px"
+        if(((windowWidth/4*3)/(windowHeight))<1){
+            document.getElementById("defaultCanvas0").style.height = "auto"
+            document.getElementById("defaultCanvas0").style.width = "100%"
+            // print("1")
+        }else{
+            document.getElementById("defaultCanvas0").style.width = "auto"
+            document.getElementById("defaultCanvas0").style.height = "100%"
+            // print("2")
+        }
+    //     document.getElementById("defaultCanvas0").style.width = Adcanvas[0]*4/3 + "px"//1
+    //     document.getElementById("defaultCanvas0").style.height = Adcanvas[0] + "px"//0
     }
   }
