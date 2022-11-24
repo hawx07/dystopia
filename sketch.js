@@ -141,7 +141,7 @@ function setup() {
     roadD = 0
     // dbw = 1
     dbp = 1
-    // dbj = 1
+    dbj = 1
     dbpep = 1
     üyProb = 0
     //
